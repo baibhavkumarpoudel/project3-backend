@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     name: DataTypes.STRING,
     division: DataTypes.STRING,
-    img: DataTypes.STRING
+    img: DataTypes.STRING,
   }, {});
   Team.associate = function(models) {
     Team.hasMany(models.Player, { foreignKey: 'teamId' })
