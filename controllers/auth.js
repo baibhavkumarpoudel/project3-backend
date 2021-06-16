@@ -1,99 +1,24 @@
-require('dotenv').config();
-
 const Team = require('../models').Team;
-const constants = require('../constants');
 
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-
-const signup = (req, res) => {
-    bcrypt.genSalt(10, (err, salt) => {
-        if(err){
-            res.status(constants.INTERNAL_SERVER_ERROR).send(`ERROR: ${err}`);
-        }
-        bcrypt.hash(req.body.password, salt, (err, hashedPwd) => {
-            if(err){
-                res.status(constants.INTERNAL_SERVER_ERROR).send(`ERROR: ${err}`);
-            }
-            req.body.password = hashedPwd;
-
-            Team.create(req.body)
-            .then(newUser => {
-                const token = jwt.sign(
-                    {
-                        username: newUser.username,
-                        id: newUser.id
-                    },
-                    process.env.JWT_SECRET,
-                    {
-                        expiresIn: "30 days"
-                    }
-                )
-
-                res.status(constants.SUCCESS).json({
-                    "token" : token,
-                    "user": newUser
-                });
-            })
-            .catch(err => {
-                res.status(constants.BAD_REQUEST).send(`ERROR: ${err}`);
-            })
-        })
+const signup = (req,res) => {
+    Team.create(req.body).then(newTeam => {
+        res.redirect(`/team/${newTeam.id}`)
     })
 }
 
-const login = (req, res) => {
-    Team.findOne({
-        where: {
-            username: req.body.username
+const login = (req,res)  => {
+    Team.findOne({where: {username: req.body.username}}).then(user => {
+        if(user.password === req.body.password){
+            res.redirect(`/profile/${user.id}`)
+        }else {
+            res.redirect('/login')
         }
-    })
-    .then(foundUser => {
-        if(foundUser){
-            bcrypt.compare(req.body.password, foundUser.password, (err, match) => {
-                if(match){
-                    const token = jwt.sign(
-                        {
-                            username: foundUser.username,
-                            id: foundUser.id
-                        },
-                        process.env.JWT_SECRET,
-                        {
-                            expiresIn: "30 days"
-                        }
-                    )
-                    res.status(constants.SUCCESS).json({
-                        "token" : token,
-                        "user": foundUser
-                    });
-                } else {
-                    res.status(constants.BAD_REQUEST).send(`ERROR: Incorrect Username/Password`);
-                }
-            })
-        }
-        else{
-            res.status(constants.BAD_REQUEST).send(`ERROR: Incorrect Username/Password`);
-        }
-    })
-    .catch(err => {
-        res.status(constants.INTERNAL_SERVER_ERROR).send(`ERROR: ${err}`);
     })
 }
 
-const verifyUser = (req, res) => {
-    Team.findByPk(req.user.id, {
-        attributes: ['id', 'username', 'password', 'name', 'division', 'img']
-    })
-    .then(foundUser => {
-        res.status(constants.SUCCESS).json(foundUser);
-    })
-    .catch(err => {
-        res.status(constants.INTERNAL_SERVER_ERROR).send(`ERROR: ${err}`);
-    })
-}
+
 
 module.exports = {
     signup,
-    login,
-    verifyUser
+    login
 }
