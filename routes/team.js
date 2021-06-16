@@ -3,7 +3,7 @@ const router = express.Router();
 const ctrl = require('../controllers');
 
 
-router.get('/profile', ctrl.user.getProfile);
-router.put('/profile', ctrl.user.editProfile);
+router.get('/profile', ctrl.team.getProfile);
+router.put('/profile', ctrl.team.editProfile);
 
 module.exports = router;
