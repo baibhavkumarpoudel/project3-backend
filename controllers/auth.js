@@ -2,7 +2,7 @@ const Team = require('../models').Team;
 
 const signup = (req,res) => {
     Team.create(req.body).then(newTeam => {
-        res.redirect(`/team/${newTeam.id}`)
+        res.redirect(`/profile/${newTeam.id}`)
     })
 }
 
