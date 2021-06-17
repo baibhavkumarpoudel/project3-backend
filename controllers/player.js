@@ -2,7 +2,7 @@ const Player = require('../models').Player;
 
 const getPlayerById = (req,res) => {
     Player.findByPk(req.params.index).then(player=> {
-        res.render('show.ejs', {player: player})
+        res.send({player: player})
     })
 }
 
@@ -21,8 +21,6 @@ const deletePlayer = (req,res) => {
         res.redirect('/player')
     })
 }
-
-
 
 module.exports = {
     getPlayerById,
