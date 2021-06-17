@@ -6,7 +6,7 @@ const getProfile = (req,res) => {
     Team.findByPk(req.params.index, {
         include: [Player]
     }).then(team => {
-        res.render('team/profile.ejs', { team:team})
+        res.send( { team:team})
         })
 }
 

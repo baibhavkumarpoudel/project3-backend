@@ -2,7 +2,11 @@ const Player = require('../models').Player;
 
 const getPlayerById = (req,res) => {
     Player.findByPk(req.params.index).then(player=> {
+<<<<<<< HEAD
         res.send({player: player})
+=======
+        res.send( {player: player})
+>>>>>>> 68178f7c499ceda84483a42bdef4f0affc225610
     })
 }
 
