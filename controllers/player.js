@@ -22,8 +22,6 @@ const deletePlayer = (req,res) => {
     })
 }
 
-
-
 module.exports = {
     getPlayerById,
     editPlayer,
