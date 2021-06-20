@@ -23,4 +23,5 @@
     - Postgres
     - Migrated and seeded tables
 - Wireframe 
+- Cors
 
